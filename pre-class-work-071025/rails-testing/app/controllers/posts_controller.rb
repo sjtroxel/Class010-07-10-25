@@ -1,10 +1,12 @@
 class PostsController < ApplicationController
+  before_action :set_post, only: [:show, :update, :destroy]
+
   def create
     post = Post.new(post_params)
     if post.save
       render json: post, status: :created
     else
-      render json: post.errors, status: :unprocessable_entity 
+      render json: post.errors, status: :unprocessable_entity
     end
   end
 
@@ -13,32 +15,23 @@ class PostsController < ApplicationController
   end
 
   def show 
-    post = Post.find(params[:id])
-    if post 
-      render json: post, status: :ok 
-    else 
-      render json: {messages: 'not found'}, status: :not_found
-    end
+    render json: @post, status: :ok 
   end
 
   def update 
-    post = Post.find(params[:id])
-
-    if post.update(post_params)
-      render json: post, status: :ok 
+    if @post.update(post_params)
+      render json: @post, status: :ok 
     else 
-      render json: post.errors, status: :unprocessable_entity
+      render json: @post.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
-    post = Post.find(params[:id])
-
-    if post.destroy
+    if @post.destroy
       # return a response with only headers and no body
       head :no_content
     else 
-      render json: post.errors, status: :unprocessable_entity
+      render json: @post.errors, status: :unprocessable_entity
     end
   end
 
@@ -46,5 +39,9 @@ class PostsController < ApplicationController
 
   def post_params
     params.require(:post).permit(:title, :content)
+  end
+
+  def set_post
+    @post = Post.find(params[:id])
   end
 end
