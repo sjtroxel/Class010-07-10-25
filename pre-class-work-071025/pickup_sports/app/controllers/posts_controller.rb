@@ -1,5 +1,14 @@
 class PostsController < ApplicationController
-  before_action :set_post, only: [:update, :destroy]
+  before_action :set_post, only: [:update, :destroy, :show]
+
+  def index
+    posts = Post.all
+    render json: posts, status: :ok
+  end
+
+  def show
+    render json: @post, status: :ok
+  end
 
   def create
     post = Post.new(post_params)
